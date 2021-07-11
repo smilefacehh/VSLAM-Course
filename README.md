@@ -14,7 +14,7 @@ make -j8
 ./draw_cube ../data/ ../conf/
 ```
 
-[!image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec2/cube.png)
+![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec2/cube.png)
 
 ## 相机标定
 功能
@@ -30,4 +30,4 @@ make -j8
 ./draw_cube ../data/ ../conf/
 ```
 
-[!image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec3/calib.png)
+![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec3/calib.png)

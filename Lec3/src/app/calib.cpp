@@ -121,7 +121,6 @@ void Calib::run()
                 pxs(i, 0) = px_line(2 * i);
                 pxs(i, 1) = px_line(2 * i + 1);
             }
-            // std::cout << "pxs:" << pxs << std::endl;
             // DLT计算外参
             mango::Pose3D pose;
             auto& camera = mango::CameraMgr::getInstance().getCameraById(camera_id);
@@ -139,9 +138,6 @@ void Calib::run()
                 reproject_pxs(i, 0) = px.x;
                 reproject_pxs(i, 1) = px.y;
             }
-
-            // mango::Point3D pose_pt = mango::Point3D(pose.origin());
-            // mango::Point2D pose_px = mango::project(pose_pt, camera, pose);
 
             cv::Mat img_1 = mango::drawPoint(img, pxs, mango::DrawType::CIRCLE, cv::Scalar(0, 255, 0));
             cv::Mat img_2 = mango::drawPoint(img_1, reproject_pxs, mango::DrawType::X, cv::Scalar(0, 0, 255));

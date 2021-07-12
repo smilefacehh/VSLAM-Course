@@ -66,7 +66,6 @@ Eigen::Matrix<double, Eigen::Dynamic, 12> DLT::makeQ()
             Q.row(2 * i + 1) = row;
         }
     }
-    // std::cout << Q << std::endl;
     return Q;
 }
 
@@ -83,19 +82,12 @@ Eigen::Matrix<double, 3, 4> DLT::getM(const Eigen::Matrix<double, Eigen::Dynamic
     M << solu(0), solu(1),  solu(2),  solu(3),
          solu(4), solu(5),  solu(6),  solu(7),
          solu(8), solu(9), solu(10), solu(11);
-    // std::cout << "V:" << V << std::endl;
-    // std::cout << "M:\n" << M << std::endl;
     
-    // 确保R的行列式是+1
+    // 确保R的行列式是+1，旋转矩阵的要求
     if(M.block(0, 0, 3, 3).determinant() < 0)
     {
         M *= -1;
     }
-
-    // if(M(2, 3) < 0)
-    // {
-    //     M *= -1;
-    // }
 
     return M;
 }
@@ -110,20 +102,11 @@ Pose3D DLT::poseFromM(const Eigen::Matrix<double, 3, 4> M)
     S = svd.singularValues();
 
     double d0 = R.norm();
-    // std::cout << "S:" << S.transpose() << std::endl;
-    // std::cout << "d0:" << d0 << std::endl;
-    // std::cout << "R:" << R << std::endl;
     R = U * V.transpose();
-    // std::cout << "R:" << R << std::endl;
-    // std::cout << "R*Rt:" << R * R.transpose() << std::endl;
-    
+
     // 用norm，不用squaredNorm
     double alpha = R.norm() / d0;
-    // std::cout << "d1:" << R.norm() << std::endl;
-    // std::cout << "alpha:" << alpha << std::endl;
-    // assert(alpha != 0);
     Eigen::Vector3d t = M.block(0, 3, 3, 1);
-    // std::cout << "t:" << t << std::endl;
     t *= alpha;
 
     Pose3D pose(R, t);
@@ -144,11 +127,6 @@ void DLT::decompM(const Eigen::Matrix<double, 3, 4> M, Pose3D& pose, Eigen::Matr
     
     Eigen::Vector3d Kt = M.block(0, 3, 3, 1);
     Eigen::Vector3d t = K.inverse() * Kt;
-
-    // std::cout << "K:\n" << K << std::endl;
-    // std::cout << "R:\n" << R << std::endl;
-    // std::cout << "Q:\n" << Q << std::endl;
-    // std::cout << "t:\n" << t << std::endl;
 
     pose.R_ = Q;
     pose.t_ = t;

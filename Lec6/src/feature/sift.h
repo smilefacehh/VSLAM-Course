@@ -15,7 +15,10 @@ namespace mango
 class Sift
 {
 public:
+    Sift();
+    ~Sift();
 
+    
 };
 
 }

@@ -1,6 +1,8 @@
 # VSLAM-Course
 http://rpg.ifi.uzh.ch/teaching.html
 
+每章节代码递增包含前一章节的代码，均为相对底层的实现，非接口调用。
+
 ## Lec2 相机模型
 功能
 - 图像畸变矫正

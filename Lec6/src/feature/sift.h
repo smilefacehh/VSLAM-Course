@@ -54,8 +54,32 @@ public:
     Sift(int nfeatures, int octaves = 5, int octave_scales = 3, double contrast_threshold = 0.04, double edge_threshold = 10, double sigma = 1.6);
     ~Sift();
 
+    /**
+     * 检测
+     * @param src         原始图像
+     * @param keypoints   特征点
+     * @param descriptors 描述子
+    */
     void detect(const cv::Mat& src, std::vector<cv::KeyPoint>& keypoints, std::vector<std::vector<float>>& descriptors);
+
+    /**
+     * 匹配
+     * @param reference_desc 参考描述子
+     * @param query_desc     查询描述子
+     * @param match_         值存匹配上的参考描述子索引，未匹配上存-1
+    */
     void match(const std::vector<std::vector<float>>& reference_desc, const std::vector<std::vector<float>>& query_desc, std::vector<int>& match_);
+
+    /**
+     * 绘制匹配图像
+     * @param reference_img 参考图像
+     * @param query_img     查询图像
+     * @param reference_kps 参考特征点
+     * @param query_kps     查询特征点
+     * @param match         匹配对
+     * @param saved_path    保存路径
+     * @param saved         是否保存图像
+    */
     void plotMatchTwoImage(const cv::Mat& reference_img, const cv::Mat& query_img, const std::vector<cv::KeyPoint>& reference_kps, const std::vector<cv::KeyPoint>& query_kps, const std::vector<int>& match, const std::string& saved_path, bool saved);
 
     /**
@@ -74,10 +98,12 @@ public:
 
     /**
      * 绘制特征点
-     * @param src 原始图像
-     * @param kps 特征点
+     * @param src        原始图像
+     * @param kps        特征点
+     * @param saved_path 保存路径
+     * @param saved      是否保存
     */
-    void plotKeypoints(const cv::Mat& src, const std::vector<cv::KeyPoint>& kps);
+    void plotKeypoints(const cv::Mat& src, const std::vector<cv::KeyPoint>& kps, const std::string& saved_path, bool saved = false);
 private:
     /**
      * 构建高斯金字塔
@@ -128,6 +154,22 @@ private:
     void calcDescriptor(const std::vector<cv::Mat>& gaussian_pyr, const std::vector<cv::KeyPoint>& kps, std::vector<std::vector<float>>& desc);
 
     /**
+     * 从patch计算描述子，1x128向量
+     * @param patch_norm 16x16图像块，每个像素存梯度值
+     * @param patch_dir  16x16图像块，每个像素存梯度方向
+     * @param desc       描述子
+    */
+    void calcPatchDescriptor(const cv::Mat& patch_norm, const cv::Mat& patch_dir, std::vector<float>& desc);
+
+    /**
+     * 从cell计算HoG，1x8向量
+     * @param cell_norm 4x4块，按距离加权之后的梯度值
+     * @param cell_dir  4x4块，梯度方向
+     * @param hog       梯度直方图
+    */
+    void calcCellHoG(const cv::Mat& cell_norm, const cv::Mat& cell_dir, std::vector<float>& hog);
+
+    /**
      * 绘制金字塔图像
      * @param pyr        金字塔数组
      * @param width      初始图像宽
@@ -154,7 +196,7 @@ private:
     // DoG金字塔
     std::vector<cv::Mat> dog_pyr_;
 
-    cv::Ptr<cv::SIFT> sift_;
+    // cv::Ptr<cv::SIFT> sift_;
 };
 
 }

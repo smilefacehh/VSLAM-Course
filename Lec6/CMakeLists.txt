@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-project(sift_match)
+project(harris_track)
 
-set(CMAKE_BUILD_TYPE "Debug")
-add_definitions(-std=c++11 -g -o0)
+add_definitions(-std=c++11 -g)
 
 FILE(GLOB ALL_SOURCES 
     "./src/app/*.cpp" 
     "./src/base/*.cpp" 
     "./src/calib/*.cpp" 
+    "./src/common/*.cpp"
     "./src/util/*.cpp" 
     "./src/feature/*.cpp"
 )
@@ -24,6 +24,8 @@ FILE(GLOB ALL_INCLUDES
     "./src/util/*.hpp"
     "./src/feature/*.h" 
     "./src/feature/*.hpp"
+    "./src/common/*.h"
+    "./src/common/*.hpp"
 )
 
 set(ALL_SRCS ${ALL_SOURCES} ${ALL_INCLUDES})
@@ -35,8 +37,5 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${Eigen3_INCLUDE_DIRS})
 include_directories(src/)
 
-add_library(mango ${ALL_SRCS})
-target_link_libraries(mango ${OpenCV_LIBS})
-
-add_executable(sift_match src/app/sift_match.cpp)
-target_link_libraries(sift_match mango ${OpenCV_LIBS})
+add_executable(sift_match ${ALL_SRCS})
+target_link_libraries(sift_match ${OpenCV_LIBS})

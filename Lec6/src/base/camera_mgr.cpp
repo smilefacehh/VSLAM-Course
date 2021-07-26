@@ -29,6 +29,9 @@ CameraPtr& CameraMgr::getCameraById(int id)
     {
         return camera_ids_[id];
     }
+    CameraPtr camera = std::shared_ptr<Camera>(new Camera(id, "new one"));
+    addCamera(camera);
+    return camera_ids_[id];
 }
 
 }

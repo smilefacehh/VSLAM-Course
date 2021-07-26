@@ -61,4 +61,31 @@ cv::Mat drawPoint(const cv::Mat& img, const Eigen::Matrix<double, Eigen::Dynamic
 
     return img_result;
 }
+
+cv::Mat drawKeyPoint(const cv::Mat& img, const std::vector<cv::KeyPoint>& kps, const cv::Scalar& color)
+{
+    cv::Mat img_result(img.rows, img.cols, CV_8UC3);
+    if(img.channels() == 1)
+    {
+        std::vector<cv::Mat> channels(3, img);
+        cv::merge(channels, img_result);
+    }
+    else
+    {
+        img.copyTo(img_result);
+    }
+    for(int i = 0; i < (int)kps.size(); i++)
+    {
+        double x = kps[i].pt.x, y = kps[i].pt.y;
+        if(x < 0 || x >= img.cols || y < 0 || y >= img.rows)
+        {
+            continue;
+        }
+
+        cv::circle(img_result, cv::Point(x, y), kps[i].size, color);
+    }
+
+    return img_result;
+}
+
 }

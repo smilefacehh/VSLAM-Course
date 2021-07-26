@@ -80,8 +80,6 @@ public:
     */
     cv::Mat plotMatchOneImage(const cv::Mat& query, const std::vector<cv::Point2i>& reference_kps, const std::vector<cv::Point2i>& query_kps, const std::vector<int>& match_);
 
-    cv::Mat plotMatchTwoImage();
-
 private:
     /**
      * shi-tomasi响应

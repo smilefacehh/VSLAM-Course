@@ -40,6 +40,13 @@ cv::Mat drawPose(const cv::Mat& img, const Pose3D& pose, const CameraPtr& camera
 */
 cv::Mat drawPoint(const cv::Mat& img, const Eigen::Matrix<double, Eigen::Dynamic, 2>& pxs, DrawType type, const cv::Scalar& color);
 
+/**
+ * 绘制特征点
+ * @param img   图像
+ * @param kps   特征点
+ * @param color 颜色
+*/
+cv::Mat drawKeyPoint(const cv::Mat& img, const std::vector<cv::KeyPoint>& kps, const cv::Scalar& color);
 
 template <class PointType>
 cv::Mat drawPoint(const cv::Mat& img, const std::vector<PointType>& pxs, DrawType type, const cv::Scalar& color)

@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-project(harris_track)
+project(sift_match)
 
-add_definitions(-std=c++11 -g)
+set(CMAKE_BUILD_TYPE "Debug")
+add_definitions(-std=c++11 -g -o0)
 
 FILE(GLOB ALL_SOURCES 
     "./src/app/*.cpp" 
@@ -32,6 +33,10 @@ find_package(Eigen3)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${Eigen3_INCLUDE_DIRS})
+include_directories(src/)
 
-add_executable(harris_track ${ALL_SRCS})
-target_link_libraries(harris_track ${OpenCV_LIBS} )
+add_library(mango ${ALL_SRCS})
+target_link_libraries(mango ${OpenCV_LIBS})
+
+add_executable(sift_match src/app/sift_match.cpp)
+target_link_libraries(sift_match mango ${OpenCV_LIBS})

@@ -229,8 +229,6 @@ cv::Mat Harris::plotMatchOneImage(const cv::Mat& query, const std::vector<cv::Po
 
     return img_result;
 }
-
-cv::Mat Harris::plotMatchTwoImage(){}
     
 void Harris::calcMinEigenVal(const cv::Mat& cov, cv::Mat& resp)
 {

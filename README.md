@@ -55,6 +55,7 @@ make -j8
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec5/harri-track.png)
 
 ## Lec6 sift特征点
+<font color="red"> 注：结果不对，还未调试完全 </font>
 功能
 - 提取sift特征点（DoG）
 - HoG梯度直方图描述子
@@ -70,7 +71,7 @@ make -j8
 ./sift_match ../data/
 ```
 
-![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec5/harri-track.png)
+![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec6/output/match.png)
 
 ## 代码规范
 

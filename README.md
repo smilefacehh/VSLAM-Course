@@ -54,6 +54,24 @@ make -j8
 
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec5/harri-track.png)
 
+## Lec6 sift特征点
+功能
+- 提取sift特征点（DoG）
+- HoG梯度直方图描述子
+- 匹配
+
+运行
+```
+cd Lec6
+mkdir build
+cd build
+cmake ..
+make -j8
+./sift_match ../data/
+```
+
+![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec5/harri-track.png)
+
 ## 代码规范
 
 - camera_mgr.h，文件名，小写、下划线

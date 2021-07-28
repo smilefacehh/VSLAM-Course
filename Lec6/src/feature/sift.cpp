@@ -65,7 +65,7 @@ void Sift::match(const std::vector<std::vector<float>>& reference_desc, const st
         match_[i] = match_idx;
     }
 
-    global_min_ssd *= 1.2;
+    global_min_ssd *= 1.1;
 
     for(int i = 0; i < num_kp; i++)
     {

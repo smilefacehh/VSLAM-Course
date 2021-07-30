@@ -9,7 +9,7 @@ namespace mango {
  * 注：模板函数的实现要放到头文件中
 */
 template <typename T>
-double error_ssd(const std::vector<T>& v1, const std::vector<T>& v2)
+double ssd(const std::vector<T>& v1, const std::vector<T>& v2)
 {
     assert(v1.size() == v2.size());
 

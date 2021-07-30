@@ -175,7 +175,7 @@ void Harris::match(const std::vector<std::vector<uchar>>& reference_desc, const 
         int match_idx = -1;
         for(size_t j = 0; j < reference_desc.size(); j++)
         {
-            double ssd = mango::error_ssd<uchar>(query_desc[i], reference_desc[j]);
+            double ssd = mango::ssd<uchar>(query_desc[i], reference_desc[j]);
             if(ssd < min_ssd)
             {
                 min_ssd = ssd;

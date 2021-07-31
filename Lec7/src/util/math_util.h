@@ -25,5 +25,17 @@ double ssd(const std::vector<T>& v1, const std::vector<T>& v2)
     return sum;
 }
 
+/**
+ * Sum of Squared Differences
+*/
 double ssd(const cv::Mat& p1, const cv::Mat& p2);
+
+/**
+ * 多项式拟合
+ * @param x x
+ * @param y y
+ * @param o 多项式阶数
+*/
+cv::Mat polyfit(const std::vector<double>& x, const std::vector<double>& y, int o);
+
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-project(sift_match)
+project(stereo_vision)
 
 add_definitions(-std=c++11 -g)
 
@@ -11,6 +11,7 @@ FILE(GLOB ALL_SOURCES
     "./src/common/*.cpp"
     "./src/util/*.cpp" 
     "./src/feature/*.cpp"
+    "./src/vo/*.cpp"
 )
 
 FILE(GLOB ALL_INCLUDES 
@@ -26,16 +27,21 @@ FILE(GLOB ALL_INCLUDES
     "./src/feature/*.hpp"
     "./src/common/*.h"
     "./src/common/*.hpp"
+    "./src/vo/*.h"
+    "./src/vo/*.hpp"
 )
 
 set(ALL_SRCS ${ALL_SOURCES} ${ALL_INCLUDES})
 
-find_package(OpenCV)
-find_package(Eigen3)
+find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(OpenMP REQUIRED)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMAX_OPENMP_NUM_THREADS=${PROCESSOR_COUNT} -DOPENMP_NUM_THREADS=${PROCESSOR_COUNT} ${OpenMP_CXX_FLAGS} -DOPENMP")
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${Eigen3_INCLUDE_DIRS})
 include_directories(src/)
 
-add_executable(sift_match ${ALL_SRCS})
-target_link_libraries(sift_match ${OpenCV_LIBS})
+add_executable(stereo_vision ${ALL_SRCS})
+target_link_libraries(stereo_vision ${OpenCV_LIBS})

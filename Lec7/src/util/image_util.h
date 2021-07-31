@@ -12,4 +12,9 @@ namespace mango
 */
 cv::Mat mergeImage(const std::vector<cv::Mat>& imgs, int w, int h);
 
+/**
+ * 灰度图映射成彩色图，显示用
+ * @param img 灰度图像
+*/
+cv::Mat gray2color(const cv::Mat& img);
 }

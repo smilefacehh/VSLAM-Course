@@ -68,4 +68,16 @@ cv::Mat mergeImage(const std::vector<cv::Mat>& imgs, int w, int h)
     return merge_img;
 }
 
+cv::Mat gray2color(const cv::Mat& img)
+{
+    double vmin, vmax;
+    cv::minMaxLoc(img, &vmin, &vmax);
+    double alpha = (255.0 / (vmax - vmin))*0.85;
+    cv::Mat tmp;
+    img.convertTo(tmp, CV_8U, alpha, -vmin * alpha);
+    cv::Mat color;
+    applyColorMap(tmp, color, cv::COLORMAP_JET);
+    return color;
+}
+
 }

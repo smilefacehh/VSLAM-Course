@@ -75,6 +75,10 @@ make -j8
 
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec6/output/match.png)
 
+## 踩坑
+cv::Mat.at<T> T的类型一定要对，否则会出问题
+
+
 ## 代码规范
 
 - camera_mgr.h，文件名，小写、下划线

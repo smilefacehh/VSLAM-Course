@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 project(stereo_vision)
 
-add_definitions(-std=c++11 -g)
+add_definitions(-std=c++14 -g)
 
 FILE(GLOB ALL_SOURCES 
     "./src/app/*.cpp" 
@@ -33,6 +33,7 @@ FILE(GLOB ALL_INCLUDES
 
 set(ALL_SRCS ${ALL_SOURCES} ${ALL_INCLUDES})
 
+find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenMP REQUIRED)
@@ -43,5 +44,9 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${Eigen3_INCLUDE_DIRS})
 include_directories(src/)
 
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
 add_executable(stereo_vision ${ALL_SRCS})
-target_link_libraries(stereo_vision ${OpenCV_LIBS})
+target_link_libraries(stereo_vision ${OpenCV_LIBS} ${PCL_LIBRARIES})

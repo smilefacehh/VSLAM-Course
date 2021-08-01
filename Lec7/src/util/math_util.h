@@ -28,7 +28,21 @@ double ssd(const std::vector<T>& v1, const std::vector<T>& v2)
 /**
  * Sum of Squared Differences
 */
-double ssd(const cv::Mat& p1, const cv::Mat& p2);
+template <typename T>
+double ssd(const cv::Mat& p1, const cv::Mat& p2)
+{
+    double sum = 0;
+    for(int r = 0; r < p1.rows; r++)
+    {
+        for(int c = 0; c < p1.cols; c++)
+        {
+            // 这里类型一定不能错
+            double d = p1.at<T>(r, c) - p2.at<T>(r, c);
+            sum += d * d;
+        }
+    }
+    return sum;
+}
 
 /**
  * 多项式拟合

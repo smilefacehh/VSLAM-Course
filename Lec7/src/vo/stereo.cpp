@@ -13,7 +13,7 @@ Stereo::~Stereo() {}
 
 cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float patch_radius, float min_disp, float max_disp)
 {
-    cv::Mat disp_img = cv::Mat::zeros(left_img.size(), CV_8UC1);
+    cv::Mat disp_img = cv::Mat::zeros(left_img.size(), CV_32FC1);
     
     int rmax = left_img.rows - (int)patch_radius, cmax = left_img.cols - (int)patch_radius;
 
@@ -41,7 +41,7 @@ cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float p
             for(int i = min_disp; i <= max_disp; i++)
             {
                 cv::Mat right_patch = right_img.rowRange(rstart, rend).colRange(cstart-i, cend-i);
-                double ssd_val = mango::ssd(left_patch, right_patch);
+                double ssd_val = mango::ssd<uchar>(left_patch, right_patch);
                 ssd_vals[i - min_disp] = ssd_val;
                 if(ssd_val < min_ssd_val)
                 {
@@ -49,11 +49,11 @@ cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float p
                     min_ssd_disp = i;
                 }
             }
-
+            
             // 边界上的点也不考虑，因为后面要用相邻两个点拟合二次曲线，找最低点，亚像素插值
             if(min_ssd_disp == -1 || min_ssd_disp == min_disp || min_disp == max_disp)
             {
-                disp_img.at<uchar>(r, c) = 0;
+                disp_img.at<float>(r, c) = 0;
             }
             else
             {
@@ -73,7 +73,7 @@ cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float p
                 }
                 if(count >= th)
                 {
-                    disp_img.at<uchar>(r, c) = 0;
+                    disp_img.at<float>(r, c) = 0;
                 }
                 else
                 {
@@ -84,8 +84,15 @@ cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float p
                     cv::Mat K = mango::polyfit(std::vector<double>{min_ssd_disp_left,(double)min_ssd_disp,min_ssd_disp_right},
                                                std::vector<double>{min_ssd_left,min_ssd,min_ssd_right},
                                                2);
-                    disp_img.at<uchar>(r, c) = -K.at<double>(1,0)/(2 * K.at<double>(2,0));
-                    disp_img.at<uchar>(r, c) = min_ssd_disp;
+
+                    if(K.at<double>(2,0) <= 0 || abs(-K.at<double>(1,0)/(2 * K.at<double>(2,0)) - min_ssd_disp) >= 1)
+                    {
+                        disp_img.at<float>(r, c) = min_ssd_disp;
+                    }
+                    else
+                    {
+                        disp_img.at<float>(r, c) = -K.at<double>(1,0)/(2 * K.at<double>(2,0));
+                    }
                 }
             }
         }
@@ -94,5 +101,67 @@ cv::Mat Stereo::match(const cv::Mat& left_img, const cv::Mat& right_img, float p
     return disp_img;
 }
 
-void Stereo::triangulate() {}
+pcl::PointCloud<pcl::PointXYZRGB> Stereo::disparity2pointcloud(const cv::Mat& disparity, const cv::Mat& img, cv::Mat& depth, const Eigen::Matrix3d& K, double baseline)
+{
+    pcl::PointCloud<pcl::PointXYZRGB> pointcloud;
+    // 临时存
+    cv::Mat postmp = cv::Mat(disparity.size(), CV_32FC3);
+    depth = cv::Mat(disparity.size(), CV_32FC1);
+
+#pragma omp parallel for
+    for(int r = 0; r < disparity.rows; r++)
+    {
+#pragma omp parallel for
+        for(int c = 0; c < disparity.cols; c++)
+        {
+            if(disparity.at<float>(r, c) > 0)
+            {
+                Eigen::Vector3d p0(r, c, 1);
+                Eigen::Vector3d p1(r, c - disparity.at<float>(r,c), 1);
+                Eigen::Vector3d p0_ = K.inverse() * p0;
+                Eigen::Vector3d p1_ = K.inverse() * p1;
+                Eigen::Matrix<double, 3, 2> A;
+                A.block(0, 0, 3, 1) = p0_;
+                A.block(0, 1, 3, 1) = p1_;
+                Eigen::Vector3d b(baseline, 0, 0);
+                Eigen::Vector2d lambda = (A.transpose() * A).inverse() * (A.transpose() * b);
+                Eigen::Vector3d P = lambda(0) * K.inverse() * p0;
+                depth.at<float>(r, c) = P(2);
+                postmp.at<cv::Vec3f>(r, c)[0] = P(0);
+                postmp.at<cv::Vec3f>(r, c)[1] = P(1);
+                postmp.at<cv::Vec3f>(r, c)[2] = P(2);
+            }
+        }
+    }
+
+    // 并行for里面不能用push_back
+    for(int r = 0; r < postmp.rows; r++)
+    {
+        for(int c = 0; c < postmp.cols; c++)
+        {
+            if(disparity.at<float>(r,c) > 0)
+            {
+                pcl::PointXYZRGB p;
+                p.x = postmp.at<cv::Vec3f>(r, c)[0];
+                p.y = postmp.at<cv::Vec3f>(r, c)[1];
+                p.z = postmp.at<cv::Vec3f>(r, c)[2];
+                if(img.channels() == 3)
+                {
+                    p.b = img.at<cv::Vec3f>(r, c)[0];
+                    p.g = img.at<cv::Vec3f>(r, c)[1];
+                    p.r = img.at<cv::Vec3f>(r, c)[2];
+                }
+                else
+                {
+                    p.b = img.at<uchar>(r, c);
+                    p.g = p.b;
+                    p.r = p.b;
+                }
+                pointcloud.push_back(p);
+            }
+        }
+    }
+    return pointcloud;
+}
+
 }

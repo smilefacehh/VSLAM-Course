@@ -72,7 +72,7 @@ cv::Mat gray2color(const cv::Mat& img)
 {
     double vmin, vmax;
     cv::minMaxLoc(img, &vmin, &vmax);
-    double alpha = (255.0 / (vmax - vmin))*0.85;
+    double alpha = (255.0 / (vmax - vmin))*1;
     cv::Mat tmp;
     img.convertTo(tmp, CV_8U, alpha, -vmin * alpha);
     cv::Mat color;

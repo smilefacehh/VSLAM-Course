@@ -1,6 +1,9 @@
 #pragma once
 
 #include <vector>
+
+#include <Eigen/Eigen>
+
 #include <opencv2/opencv.hpp>
 
 namespace mango {
@@ -52,4 +55,46 @@ double ssd(const cv::Mat& p1, const cv::Mat& p2)
 */
 cv::Mat polyfit(const std::vector<double>& x, const std::vector<double>& y, int o);
 
+
+/**
+ * 反对称矩阵3x3
+ * @param vec (3,1) 向量
+ * @return    (3,3) 反对称矩阵
+*/
+template <typename T>
+Eigen::Matrix<T, 3, 3> skewSymmetricMatrix3(const Eigen::Matrix<T, 3, 1>& vec)
+{
+    Eigen::Matrix<T, 3, 3> skew_symmetric_matrix;
+    skew_symmetric_matrix << 0, -vec(2,0), vec(1,0),
+                             vec(2,0), 0, -vec(0,0),
+                             -vec(1,0), vec(0,0), 0;
+    
+    return skew_symmetric_matrix;
+}
+
+/**
+ * 向量克罗内克积
+ * @param vec1 (m,1) 向量一
+ * @param vec1 (n,1) 向量二
+ * @return     (mn,1) 结果向量
+*/
+template <typename T>
+Eigen::Matrix<T, Eigen::Dynamic, 1> kronecker(const Eigen::Matrix<T, Eigen::Dynamic, 1>& vec1, const Eigen::Matrix<T, Eigen::Dynamic, 1>& vec2)
+{
+    int m = vec1.rows(), n = vec2.rows();
+
+    Eigen::Matrix<T, Eigen::Dynamic, 1> kronecker_prod;
+    kronecker_prod.resize(m * n, 1);
+
+    int idx = 0;
+    for(int i = 0; i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            kronecker_prod(idx++) = vec1(i) * vec2(j); 
+        }
+    }
+    
+    return kronecker_prod;
+}
 }

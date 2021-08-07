@@ -60,6 +60,7 @@ public:
                                                                 const Eigen::Matrix<float, 3, 4>& M1,
                                                                 const Eigen::Matrix<float, 3, 4>& M2);
 
+
     /**
      * 八点法计算基础矩阵
      * @param p1 (3,N) 图像一中的像素点齐次坐标
@@ -80,12 +81,56 @@ public:
     /**
      * 像素点归一化
      * @param pt           (3,N) 像素坐标
-     * @param pt_normlized (3,N) 归一化像素坐标
+     * @param pt_normalized (3,N) 归一化像素坐标
      * @param transform    (3,3) 变换矩阵
     */
-    void normalizePoint(const Eigen::Matrix<float, 3, Eigen::Dynamic>& pt, Eigen::Matrix<float, 3, Eigen::Dynamic>& pt_normlized, Eigen::Matrix3f& transform);
+    void normalizePoint(const Eigen::Matrix<float, 3, Eigen::Dynamic>& pt, Eigen::Matrix<float, 3, Eigen::Dynamic>& pt_normalized, Eigen::Matrix3f& transform);
 
-    
+    /**
+     * 计算本质矩阵
+     * @param p1 (3,N) 图像一中的像素点齐次坐标
+     * @param p2 (3,N) 图像二中的像素点齐次坐标
+     * @param K1 (3,3) 相机内参一
+     * @param K2 (3,3) 相机内参二
+     * @return   (3,3) 本质矩阵
+    */
+    Eigen::Matrix3f estimateEssentialMatrix(const Eigen::Matrix<float, 3, Eigen::Dynamic>& p1,
+                                            const Eigen::Matrix<float, 3, Eigen::Dynamic>& p2,
+                                            const Eigen::Matrix3f& K1,
+                                            const Eigen::Matrix3f& K2);
+
+    /**
+     * 点到极线距离之和
+     * @param F  (3,3) 基础矩阵
+     * @param p1 (3,N) 图像一中的像素点齐次坐标
+     * @param p2 (3,N) 图像二中的像素点齐次坐标
+     * @return         距离之和
+    */
+    double distPoint2EpipolarLine(const Eigen::Matrix3f& F, const Eigen::Matrix<float, 3, Eigen::Dynamic>& p1, const Eigen::Matrix<float, 3, Eigen::Dynamic>& p2);
+
+    /**
+     * 本质矩阵分解
+     * @param rotation (6,3) 两个(3,3)的旋转矩阵
+     * @param u3       (3,1) 平移
+    */
+    void decomposeEssentialMatrix(const Eigen::Matrix3f& E, Eigen::Matrix<float, 6, 3>& rotation, Eigen::Vector3f& u3);
+
+    /**
+     * 通过三角化选择正确的位姿结果
+     * @param rotation  (6,3) 两个(3,3)的旋转矩阵
+     * @param u3        (3,1) 平移
+     * @param p1        (3,N) 图像一中的像素点齐次坐标
+     * @param p2        (3,N) 图像二中的像素点齐次坐标
+     * @param K1        (3,3) 相机内参一
+     * @param K2        (3,3) 相机内参二
+     * @return          (3,4) [R|t]
+    */
+    Eigen::Matrix<float, 3, 4> disambiguateRelativePose(const Eigen::Matrix<float, 6, 3>& rotation, 
+                                                        const Eigen::Vector3f& u3,
+                                                        const Eigen::Matrix<float, 3, Eigen::Dynamic>& p1,
+                                                        const Eigen::Matrix<float, 3, Eigen::Dynamic>& p2,
+                                                        const Eigen::Matrix3f& K1,
+                                                        const Eigen::Matrix3f& K2);
 };
 }
 #endif

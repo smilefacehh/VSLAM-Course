@@ -1,7 +1,8 @@
 # VSLAM-Course
-http://rpg.ifi.uzh.ch/teaching.html
+课程主页：http://rpg.ifi.uzh.ch/teaching.html
+课程主页上有课件pdf、matlab代码，非常详细。
 
-每章节代码递增包含前一章节的代码，均为相对底层的实现，非接口调用。
+这里改写成c++代码，从底层实现每节课的作业，到课程结束时将所有代码重构形成一个完整的slam系统。
 
 ## Lec2 相机模型
 功能

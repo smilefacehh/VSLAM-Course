@@ -92,11 +92,12 @@ cmake ..
 make -j8
 ./stereo_vision ../data/
 ```
-
 所有点计算视差，不做额外处理的视差图
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec7/output/unfiltered_disp.png)
+
 处理之后的视差图，对于某个点如果超过3个ssd比较小的匹配结果，那么认为匹配不够准确，视差置0
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec7/output/filtered_disp.png)
+
 视差图对应的深度图
 ![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec7/output/depth.png)
 
@@ -123,9 +124,10 @@ make -j8
 ```
 
 ## 踩坑
-cv::Mat.at<T> T的类型一定要对，否则会出问题
-Eigen::Matrix3f F; 要指明了矩阵的维度，才能使用 <<
-Eigen::MatrixXf A; A.resize(a,b); 没有指明维度的矩阵，需要resize，才能赋值
+
+- cv::Mat.at<T> T的类型一定要对，否则会出问题
+- Eigen::Matrix3f F; 要指明了矩阵的维度，才能使用 <<
+- Eigen::MatrixXf A; A.resize(a,b); 没有指明维度的矩阵，需要resize，才能赋值
  
 
 ## 代码规范

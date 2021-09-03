@@ -124,6 +124,22 @@ make -j8
 ./stereo_vision ../data/
 ```
 
+## Lec9 ransac
+功能
+- 双目特征点匹配，然后通过p3p（已知3d点）来计算R、t，进而计算重投影误差，选择inlier匹配点
+
+运行
+```
+cd Lec8
+mkdir build
+cd build
+cmake ..
+make -j8
+./poly_ransac # ransac拟合二次曲线的例子
+./stereo_p3p  # ransac特征点匹配的例子
+```
+![image](https://github.com/smilefacehh/VSLAM-Course/blob/main/Lec9/output/ransac.png)
+
 ## 踩坑
 
 - cv::Mat.at<T> T的类型一定要对，否则会出问题

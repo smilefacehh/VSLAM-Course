@@ -85,6 +85,30 @@ Eigen::VectorXf polyVal(const Eigen::VectorXf& x, const Eigen::VectorXf& poly_pa
 }
 
 /**
+ * 矩阵克罗内克积
+*/
+cv::Mat kronecker(const cv::Mat& A, const cv::Mat& B)
+{
+    CV_Assert(A.channels() == 1 && B.channels() == 1);
+
+    cv::Mat1d Ad, Bd;
+    A.convertTo(Ad, CV_32F);
+    B.convertTo(Bd, CV_32F);
+
+    cv::Mat1d Kd(Ad.rows * Bd.rows, Ad.cols * Bd.cols, 0.0);
+    for (int ra = 0; ra < Ad.rows; ++ra)
+    {
+        for (int ca = 0; ca < Ad.cols; ++ca)
+        {
+            Kd(cv::Range(ra*Bd.rows, (ra + 1)*Bd.rows), cv::Range(ca*Bd.cols, (ca + 1)*Bd.cols)) = Bd.mul(Ad(ra, ca));
+        }
+    }
+    cv::Mat K;
+    Kd.convertTo(K, A.type());
+    return K;
+}
+
+/**
  * 从[0,n)连续整数中随机取k个不同的数字
 */
 std::vector<int> randomN(int n, int k)

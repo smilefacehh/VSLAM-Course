@@ -28,4 +28,9 @@ cv::Mat warpImage(const cv::Mat& img, const Eigen::Matrix<float, 2, 3>& warpTran
  * (2,3)仿射变换矩阵，近似
 */
 Eigen::Matrix<float, 2, 3> getWarp(float dx, float dy, float alpha, float lambda);
+
+/**
+ * 取点（x,y）处仿射变换后的patch
+*/
+cv::Mat getWarpedPatch(const cv::Mat& img, const Eigen::Matrix<float, 2, 3>& warpTransform, float x, float y, float patch_radius);
 }

@@ -115,6 +115,11 @@ Eigen::Matrix<T, Eigen::Dynamic, 1> kronecker(const Eigen::Matrix<T, Eigen::Dyna
 }
 
 /**
+ * 矩阵克罗内克积
+*/
+cv::Mat kronecker(const cv::Mat& A, const cv::Mat& B);
+
+/**
  * 从[0,n)连续整数中随机取k个不同的数字
 */
 std::vector<int> randomN(int n, int k);

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 project(klt_track)
 
-add_definitions(-std=c++14 -g)
+add_definitions(-std=c++14 -O3)
 
 FILE(GLOB ALL_SOURCES 
     "./src/base/*.cpp" 

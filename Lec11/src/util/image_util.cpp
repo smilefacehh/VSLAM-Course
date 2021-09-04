@@ -72,7 +72,7 @@ cv::Mat gray2color(const cv::Mat& img)
 {
     double vmin, vmax;
     cv::minMaxLoc(img, &vmin, &vmax);
-    double alpha = (255.0 / (vmax - vmin))*1;
+    double alpha = (255.0 / (vmax - vmin)) * 1;
     cv::Mat tmp;
     img.convertTo(tmp, CV_8U, alpha, -vmin * alpha);
     cv::Mat color;
@@ -117,5 +117,30 @@ Eigen::Matrix<float, 2, 3> getWarp(float dx, float dy, float alpha, float lambda
     warpTransform *= lambda;
 
     return warpTransform;
+}
+
+/**
+ * 取点（x,y）处仿射变换后的patch
+*/
+cv::Mat getWarpedPatch(const cv::Mat& img, const Eigen::Matrix<float, 2, 3>& warpTransform, float x, float y, float patch_radius)
+{
+    assert(img.channels() == 1);
+
+    cv::Mat patch = cv::Mat::zeros(cv::Size(2*patch_radius+1, 2*patch_radius+1), CV_8UC1);
+
+    for(int i = -patch_radius; i <= patch_radius; i++)
+    {
+        for(int j = -patch_radius; j <= patch_radius; j++)
+        {
+            Eigen::Vector2f warped = Eigen::Vector2f(x, y) + warpTransform * Eigen::Vector3f(i, j, 1);
+            float warp_x = warped(0); float warp_y = warped(1);
+            if(warp_x >= 0 && warp_x < img.cols && warp_y >= 0 && warp_y < img.rows)
+            {
+                patch.at<uchar>(j + patch_radius, i + patch_radius) = img.at<uchar>(int(warp_y), int(warp_x));
+            }
+        }
+    }
+
+    return patch;
 }
 }
